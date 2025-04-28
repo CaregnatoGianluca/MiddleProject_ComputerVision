@@ -9,10 +9,14 @@ int main() {
     cv::CascadeClassifier cascade;
     //std::string cascadePath = "../Image_generated/cascade_mustard_bottle24/cascade.xml";
     //std::string cascadePath = "../Image_generated/cascade_mustard_bottle60/cascade.xml";
-    std::string cascadePath = "../Image_generated/cascade_sugar_box60/cascade.xml";
+    //std::string cascadePath = "../Image_generated/cascade_sugar_box60/cascade.xml";
     //std::string cascadePath = "../Image_generated/cascade_power_drill/cascade.xml";
+    
+    std::string cascadePath = "../Image_generated/cascade_sugar_box_gray40/cascade.xml";
+    //std::string cascadePath = "../Image_generated/cascade_mustard_bottle_gray40/cascade.xml";
+    //std::string cascadePath = "../Image_generated/cascade_power_drill_gray40/cascade.xml";
     if (!cascade.load(cascadePath)) {
-        std::cerr << "Error loading cascade file: " << cascadePath << std::endl;
+        std::cerr << "Error loading cascade classifier from " << cascadePath << std::endl;
         return -1;
     }
 
@@ -36,7 +40,7 @@ int main() {
             std::cerr << "Could not load image: " << imageFile << std::endl;
             continue;
         }
-
+                            
         cv::Mat gray;
         cv::cvtColor(image, gray, cv::COLOR_BGR2GRAY);
         //cv::equalizeHist(gray, gray);
@@ -44,13 +48,13 @@ int main() {
         cv::GaussianBlur(gray, blurred_gray, cv::Size(3, 3), 0); // Kernel size (must be odd), sigmaX
         // Then potentially apply CLAHE or equalizeHist to blurred_gray
         // Mat image_to_detect = blurred_gray;
-        imshow("Gray", blurred_gray);
+        //imshow("Gray", blurred_gray);
 
         // Detect objects using the cascade classifier
         std::vector<cv::Rect> detections;
-        //cascade.detectMultiScale(blurred_gray, detections, 1.1, 1, 0, cv::Size(10, 10)); 
+        cascade.detectMultiScale(blurred_gray, detections, 1.0005, 3, 3, cv::Size(5, 5)); 
         // Option 1a: Slightly more sensitive scaling
-        cascade.detectMultiScale(blurred_gray, detections, 1.05, 0, 0, cv::Size(5, 5));
+        //cascade.detectMultiScale(blurred_gray, detections, 1.05, 0, 0, cv::Size(5, 5));
         // If any detection, output details
         if (!detections.empty()) {
             std::cout << "Object detected in image: " << imageFile << std::endl;
